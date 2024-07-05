@@ -11,6 +11,10 @@ import {
 
 import { db } from '../firebase/fire';
 
+import {storage} from '../firebase/fire';
+
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 export const generateId = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -22,7 +26,7 @@ export const generateId = () => {
     return randomID;
 }
 
-export const createData =  async (collectionName, data) => {
+export const createData = async (collectionName, data) => {
     const id = generateId();
     try {
         const docRef = doc(db, collectionName, id);
@@ -59,7 +63,7 @@ export const updateData = async (collectionName, id, data) => {
             ...data,
         });
 
-        console.log("Document successfully update!");
+        console.log("Document successfully updated!");
     } catch (error) {
         console.error("Error updating document: ", error);
     }
@@ -104,3 +108,17 @@ export const listenToCollection = (collectionName, callback) => {
 }
 
 
+export const uploadImage = async (imageFile) => {
+    const imageId = generateId();
+    const imageRef = ref(storage, `images/${imageId}`);
+
+    try {
+        await uploadBytes(imageRef, imageFile);
+        const downloadURL = await getDownloadURL(imageRef);
+        console.log("Image uploaded and accessible at: ", downloadURL);
+        return downloadURL;
+    } catch (error) {
+        console.error("Error uploading image: ", error);
+        throw error;
+    }
+}

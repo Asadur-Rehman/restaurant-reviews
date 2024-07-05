@@ -1,17 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { UserAuth } from "../context/AuthContext";
 
-export default function NavBar({children}) {
+export default function NavBar({ children }) {
+    const { user } = UserAuth();
+    const [profilePic, setProfilePic] = useState("//beforeigosolutions.com/wp-content/uploads/2021/12/dummy-profile-pic-300x300-1.png");
+
+    useEffect(() => {
+        if (user && user.profilePicURL) {
+            setProfilePic(user.profilePicURL);
+        }
+    }, [user]);
+
     return (
         <>
-            <nav class="bg-gray-800">
-                <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-                    <div class="relative flex h-16 items-center justify-center">
-                        <div class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white mx-40 hover:bg-gray-700">
-                            <Link to="/home" className="text-blue-500 hover:text-blue-700">Home</Link>
+            <nav className="bg-gray-800">
+                <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+                    <div className="relative flex h-16 items-center justify-between">
+                        {/* Logo Text */}
+                        <div className="flex-shrink-0 text-white font-bold text-xl">
+                            <Link to="/home" className="text-blue-500 hover:text-blue-700">DineWise</Link>
                         </div>
-                        <div class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white mx-40 hover:bg-gray-700">
-                            <Link to="/" className="text-blue-500 hover:text-blue-700">Dashboard</Link>
+                        <div className="flex-1 flex items-center justify-center space-x-1">
+                            {/* Additional links can go here */}
+                        </div>
+                        <div className="flex-shrink-0 ml-auto">
+                            <Link to="/user-dashboard">
+                                <img
+                                    src={profilePic}
+                                    alt="Profile"
+                                    className="h-10 w-10 rounded-full"
+                                />
+                            </Link>
                         </div>
                     </div>
                 </div>
